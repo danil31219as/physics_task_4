@@ -27,7 +27,7 @@
 
     function updateChart() {
         const induction = parseFloat(document.getElementById('induction').value);
-        const frequency = parseInt(document.getElementById('frequency').value);
+        const frequency = parseFloat(document.getElementById('frequency').value);
         const resistance = parseFloat(document.getElementById('resistance').value);
 
         const ctx = document.getElementById('myChart').getContext('2d');
