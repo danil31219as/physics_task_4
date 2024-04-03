@@ -25,14 +25,17 @@
 
 <script>
     function calculateEDS(square, induction, frequency, time) {
+        if (square < 0 || induction < 0 || frequency < 0){
+            return 0;
+        }
         return square * induction * 2 * Math.PI * frequency * Math.sin(2 * Math.PI * frequency * time);
     }
 
     function updateChart() {
-        const induction = Math.max(parseFloat(document.getElementById('induction').value), 0);
-        const frequency = Math.max(parseFloat(document.getElementById('frequency').value), 0);
-        const resistance = Math.max(parseFloat(document.getElementById('resistance').value), 0);
-        const square = Math.max(parseFloat(document.getElementById('square').value), 0);
+        const induction = parseFloat(document.getElementById('induction').value);
+        const frequency = parseFloat(document.getElementById('frequency').value);
+        const resistance = parseFloat(document.getElementById('resistance').value);
+        const square = parseFloat(document.getElementById('square').value);
 
 
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -59,7 +62,11 @@
             data.labels.push(time.toFixed(2));
             let eds = calculateEDS(square, induction, frequency, time)
             data.datasets[0].data.push(eds.toFixed(20));
-            data.datasets[1].data.push((eds/ resistance).toFixed(20));
+            if (resistance < 0){
+                data.datasets[1].data.push(0);
+            } else {
+                data.datasets[1].data.push((eds / resistance).toFixed(20));
+            }
         }
 
         if (window.myLineChart) {
