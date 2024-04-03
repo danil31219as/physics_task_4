@@ -10,25 +10,30 @@
 <h1>Моделирование электрогенератора</h1>
 
 <label for="induction">Величина магнитного поля (Тл): </label>
-<input type="number" id="induction" step="1" value="0">
+<input type="number" id="induction" step="0.1" value="1">
 
 <label for="frequency">Частота вращения (р/c): </label>
 <input type="number" id="frequency" value="100">
 
 <label for="resistance">Сопротивление (Ом): </label>
-<input type="number" id="resistance" step="1" value="0">
+<input type="number" id="resistance" step="0.1" value="1">
+
+<label for="square">Площадь (м^2): </label>
+<input type="number" id="square" step="0.1" value="1">
 
 <canvas id="myChart" width="400" height="200"></canvas>
 
 <script>
-    function calculateEDS(induction, frequency, time) {
-        return induction * 2 * Math.PI * frequency * Math.sin(2 * Math.PI * frequency * time);
+    function calculateEDS(square, induction, frequency, time) {
+        return square * induction * 2 * Math.PI * frequency * Math.sin(2 * Math.PI * frequency * time);
     }
 
     function updateChart() {
-        const induction = parseFloat(document.getElementById('induction').value);
-        const frequency = parseFloat(document.getElementById('frequency').value);
-        const resistance = parseFloat(document.getElementById('resistance').value);
+        const induction = Math.max(parseFloat(document.getElementById('induction').value), 0);
+        const frequency = Math.max(parseFloat(document.getElementById('frequency').value), 0);
+        const resistance = Math.max(parseFloat(document.getElementById('resistance').value), 0);
+        const square = Math.max(parseFloat(document.getElementById('square').value), 0);
+
 
         const ctx = document.getElementById('myChart').getContext('2d');
 
@@ -50,11 +55,11 @@
                 }]
         };
 
-        for (let time = 0; time <= 1000; time += 1) {
+        for (let time = 0; time <= 100; time += 1) {
             data.labels.push(time.toFixed(2));
-            let eds = calculateEDS(induction, frequency, time)
-            data.datasets[0].data.push(eds.toFixed(10));
-            data.datasets[1].data.push((eds/ resistance).toFixed(10));
+            let eds = calculateEDS(square, induction, frequency, time)
+            data.datasets[0].data.push(eds.toFixed(20));
+            data.datasets[1].data.push((eds/ resistance).toFixed(20));
         }
 
         if (window.myLineChart) {
@@ -83,6 +88,7 @@
     document.getElementById('induction').addEventListener('input', updateChart);
     document.getElementById('frequency').addEventListener('input', updateChart);
     document.getElementById('resistance').addEventListener('input', updateChart);
+    document.getElementById('square').addEventListener('input', updateChart);
 
     updateChart();
 </script>
